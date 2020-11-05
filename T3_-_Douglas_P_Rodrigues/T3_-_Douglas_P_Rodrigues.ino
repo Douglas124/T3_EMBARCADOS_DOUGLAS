@@ -17,6 +17,7 @@
 // your LCD using them:
 const int numRows = 2;
 const int numCols = 16;
+
 typedef struct{
   char nome[20];
   char cargo[20];
@@ -27,7 +28,6 @@ typedef struct{
   char data_saida[10];
   char fim = '.';
 }estrutura;
-
 estrutura usuario;
 
 
@@ -182,15 +182,17 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 //------------------------------------------------------------------------------------- SETUP
 void setup() {
-  // initialize digital pin LED_BUILTIN as an output.
+  // initialize digital pin LED_BUILTIN as an output.  
+  Serial.begin(9600);
+  delay(100);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(SDA, OUTPUT);
   pinMode(SCL, OUTPUT);
   lcd.begin(numCols, numRows);
-  lcd.setCursor(0,0);
-  lcd.print("Teste1");
-  lcd.setCursor(0,1);
-  lcd.print("Teste2");
+//  lcd.setCursor(0,0);
+//  lcd.print("Teste1");
+//  lcd.setCursor(0,1);
+//  lcd.print("Teste2");
 }
 
 
@@ -199,8 +201,14 @@ void setup() {
 
 //------------------------------------------------------------------------------------- WHILE1
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);                       // wait for a second
+
+  while(!Serial.available()){
+      Serial.readBytesUntil('.',(char*)&usuario, sizeof(usuario));
+     // Serial.write(usuario.nome);
+      lcd.setCursor(0,0);
+      lcd.print(usuario.nome);
+      lcd.setCursor(0,1);
+      lcd.print(usuario.cargo);
+  }
+  
 }
