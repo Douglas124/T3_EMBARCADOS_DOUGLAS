@@ -12,6 +12,15 @@
 #define SCL0 digitalWrite(SCL,LOW)
 #define SCL1 digitalWrite(SCL,HIGH)
 
+
+
+//------------------------------------------------------------------------------------- INICIALIZAÇÃO DAS BIBLIOTECAS
+// initialize the library by associating any needed LCD interface pin
+// with the arduino pin number it is connected to
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
+
 //------------------------------------------------------------------------------------- VAR GLOBAIS
 // these constants won't change.  But you can change the size of
 // your LCD using them:
@@ -22,13 +31,13 @@ typedef struct{
   char nome[20];
   char cargo[20];
   char matricula[10];
-  char hora_entrada[10];
-  char data_entrada[10];
-  char hora_saida[10];
-  char data_saida[10];
+  char hora_entrada[12];
+  char data_entrada[12];
+  char hora_saida[12];
+  char data_saida[12];
   char fim = '.';
 }estrutura;
-estrutura usuario;
+estrutura usuario, usuarioRX;
 
 
 //------------------------------------------------------------------------------------- FUNÇÕES 
@@ -148,10 +157,10 @@ int ack_i2c(void){
   envia_byte(endereco); 
   ack_i2c();
   start_i2c();
-  envia_byte(0xA0); //1010 0000
+  envia_byte(0xA1); //aqui é 0xA1
   ack_i2c();
   dado1 = le_byte();
-  envia_0_i2c();
+  envia_1_i2c(); // aqui é envia 1
   stop_i2c();
 
   return dado1;
@@ -160,22 +169,57 @@ int ack_i2c(void){
 //--------------------------------------------------- ESCREVE ESTRUTURA
 void escreve_estrutura (void){
   uint8_t vetor[sizeof(usuario)];
-  int i=0;
-  memcpy(vetor,&usuario,sizeof(usuario));
+  int i=0,tamanho=0;
+  memcpy(vetor,&usuarioRX,sizeof(usuario));
 
   for(i=0;i<sizeof(usuario);i++){
     escreve_cartao(i,vetor[i]);
     delay(10);
   }
+//  tamanho = sizeof(usuario);
+  lcd.setCursor(0,0);
+  lcd.print("Cartao Gravado");
+  delay(1000);
+  lcd.clear();
+//   escreve_cartao(0,"1");
+//   delay(10);
 }
 
- 
+//--------------------------------------------------- LE ESTRUTURA
+void le_estrutura (void){   // le a estrutura e armazena em um vetor, e envia pela serial para o QT
+  uint8_t vetor[sizeof(usuario)];
+  int i=0;
 
-//------------------------------------------------------------------------------------- INICIALIZAÇÃO DAS BIBLIOTECAS
-// initialize the library by associating any needed LCD interface pin
-// with the arduino pin number it is connected to
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+  for(i=0;i<sizeof(usuario);i++){
+    vetor[i] = le_cartao(i);
+  }
+
+    memcpy(&usuario,vetor,sizeof(usuario));
+}
+
+
+//--------------------------------------------------- TESTA CARTAO
+int testa_cartao (void){   // le a estrutura e armazena em um vetor, e envia pela serial para o QT
+  uint8_t teste;
+  int i=0;
+  static int aux;
+
+  teste = le_cartao(0);
+  if (teste == 1){
+  aux = 1;
+  Serial.write('1');
+  lcd.setCursor(0,0);
+  lcd.print("usuario cadastrado");
+  }
+  else {
+   aux = 666;
+   Serial.write('0');
+   lcd.setCursor(0,0);
+   lcd.print("nada");
+  }
+
+  return aux;
+}
 
 
 
@@ -202,13 +246,20 @@ void setup() {
 //------------------------------------------------------------------------------------- WHILE1
 void loop() {
 
-  while(!Serial.available()){
-      Serial.readBytesUntil('.',(char*)&usuario, sizeof(usuario));
-     // Serial.write(usuario.nome);
+  if(Serial.available())
+  {
+      Serial.readBytesUntil('.',(char*)&usuarioRX, sizeof(usuario));
+      
+      escreve_estrutura();
+      
+      Serial.write(usuario.nome);
       lcd.setCursor(0,0);
       lcd.print(usuario.nome);
       lcd.setCursor(0,1);
       lcd.print(usuario.cargo);
+      le_estrutura();
+      Serial.write((char*)&usuario, sizeof(usuario));
   }
+
   
 }

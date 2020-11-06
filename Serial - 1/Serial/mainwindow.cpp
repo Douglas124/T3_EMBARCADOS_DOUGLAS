@@ -20,7 +20,7 @@ typedef struct{
   char fim = '.';
 }estrutura;
 
-estrutura usuario,usuarioRX;
+estrutura usuario;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -76,38 +76,16 @@ void MainWindow::timer_teste()
 void MainWindow::readData()
 {
     char buffer[30];
-        //int x=0;
-        QString msg,msg2;
-        msg.clear();
-        msg2.clear();
-        if(serial->bytesAvailable() >= sizeof(estrutura))
-        {
-
-         serial->read((char*)&usuarioRX,sizeof(estrutura));
-
-
-         ui->LE_NOME->clear();
-         ui->LE_CARGO->clear();
-         ui->LE_MATRICULA->clear();
-         ui->LE_ENTRADA->clear();
-         ui->LE_SAIDA->clear();
-
-         ui->LE_NOME->setText(usuarioRX.nome);
-         ui->LE_MATRICULA->setText(usuarioRX.matricula);
-         ui->LE_CARGO->setText(usuarioRX.cargo);
-
-         msg.append(usuarioRX.hora_entrada);
-         msg.append(" ");
-         msg.append(usuarioRX.data_entrada);
-         ui->LE_ENTRADA->setText(msg);
-
-         msg2.append(usuarioRX.hora_saida);
-         msg2.append(" ");
-         msg2.append(usuarioRX.data_saida);
-         ui->LE_SAIDA->setText(msg2);
-
-         serial->flush();
-       }
+    int x=0;
+    const QByteArray data = serial->readAll();
+    qDebug(data);
+    ui->LE_NOME->setText(data);
+    // ou
+    /*
+    while(x<1)
+        x=serial->bytesAvailable();
+    serial->read(buffer,2);
+    */
 }
 
 void MainWindow::on_BOTAO_ENVIA_clicked()
@@ -130,22 +108,9 @@ void MainWindow::on_BOTAO_ENVIA_clicked()
     usuario.matricula[matricula.size()+1] = '\0';
    // strcpy(usuario.data_entrada,entrada.toLatin1());
    // strcpy(usuario.data_saida, saida.toLatin1());
-    sprintf(usuario.hora_entrada,"%02d:%02d:%02d\r",timeinfo->tm_hour,timeinfo->tm_min,timeinfo->tm_sec);
+
     if(serial->isOpen())// se porta aberta
     {
         serial->write((char*)&usuario,sizeof(usuario));
     }
-}
-
-
-void MainWindow::on_BOTAO_LERDADOS_clicked()
-{
-    char buffer[30];
-    ui->LE_NOME->setText(usuarioRX.nome);
-    sprintf(buffer,usuarioRX.nome);
-    qDebug("%s",buffer);
-    ui->LE_MATRICULA->setText(usuarioRX.matricula);
-    ui->LE_CARGO->setText(usuarioRX.cargo);
-
-
 }

@@ -17,15 +17,14 @@ public:
     ~MainWindow();
 
 private slots:
-
+    void on_pushButton_clicked();
     void readData();
     void timer_teste();
-
-    void on_BOTAO_ENVIA_clicked();
+    void on_pushButton_2_clicked();
 
     void on_BOTAO_CONN_clicked();
 
-    void on_BOTAO_LERDADOS_clicked();
+    void on_BOTAO_ENVIA_clicked();
 
 private:
     Ui::MainWindow *ui;

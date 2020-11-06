@@ -24,20 +24,20 @@
      </rect>
     </property>
     <property name="text">
-     <string>Conecta</string>
+     <string>Open</string>
     </property>
    </widget>
    <widget class="QPushButton" name="BOTAO_ENVIA">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>280</x>
       <y>330</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Envia</string>
+     <string>Write</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="LE_NOME">
@@ -48,9 +48,6 @@
       <width>251</width>
       <height>20</height>
      </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QLabel" name="label_STSPORTA">
@@ -160,9 +157,6 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text">
-     <string/>
-    </property>
    </widget>
    <widget class="QLineEdit" name="LE_CARGO">
     <property name="geometry">
@@ -172,9 +166,6 @@
       <width>251</width>
       <height>20</height>
      </rect>
-    </property>
-    <property name="text">
-     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="LE_ENTRADA">
@@ -195,32 +186,6 @@
       <width>251</width>
       <height>20</height>
      </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="BOTAO_LERDADOS">
-    <property name="geometry">
-     <rect>
-      <x>160</x>
-      <y>330</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Ler DADOS</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="BOTAO_APAGA">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>330</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>APAGA</string>
     </property>
    </widget>
   </widget>
