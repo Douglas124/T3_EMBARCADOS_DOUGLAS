@@ -230,6 +230,7 @@ Makefile: ../Serial/Serial.pro E:/Qt/5.15.0/mingw81_32/mkspecs/win32-g++/qmake.c
 		E:/Qt/5.15.0/mingw81_32/mkspecs/features/qt_config.prf \
 		E:/Qt/5.15.0/mingw81_32/mkspecs/win32-g++/qmake.conf \
 		E:/Qt/5.15.0/mingw81_32/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		E:/Qt/5.15.0/mingw81_32/mkspecs/features/exclusive_builds.prf \
 		E:/Qt/5.15.0/mingw81_32/mkspecs/features/toolchain.prf \
 		E:/Qt/5.15.0/mingw81_32/mkspecs/features/default_pre.prf \
@@ -259,8 +260,8 @@ Makefile: ../Serial/Serial.pro E:/Qt/5.15.0/mingw81_32/mkspecs/win32-g++/qmake.c
 		E:/Qt/5.15.0/mingw81_32/lib/Qt5SerialPort.prl \
 		E:/Qt/5.15.0/mingw81_32/lib/Qt5Core.prl \
 		E:/Qt/5.15.0/mingw81_32/lib/qtmain.prl \
-		.qmake.stash \
-		E:/Qt/5.15.0/mingw81_32/mkspecs/features/build_pass.prf
+		E:/Qt/5.15.0/mingw81_32/mkspecs/features/build_pass.prf \
+		../Serial/MESTRE.qrc
 	$(QMAKE) -o Makefile ..\Serial\Serial.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/spec_pre.prf:
 E:/Qt/5.15.0/mingw81_32/mkspecs/qdevice.pri:
@@ -422,6 +423,7 @@ E:/Qt/5.15.0/mingw81_32/mkspecs/features/qt_functions.prf:
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/qt_config.prf:
 E:/Qt/5.15.0/mingw81_32/mkspecs/win32-g++/qmake.conf:
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/spec_post.prf:
+.qmake.stash:
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/exclusive_builds.prf:
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/toolchain.prf:
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/default_pre.prf:
@@ -451,8 +453,8 @@ E:/Qt/5.15.0/mingw81_32/lib/Qt5Gui.prl:
 E:/Qt/5.15.0/mingw81_32/lib/Qt5SerialPort.prl:
 E:/Qt/5.15.0/mingw81_32/lib/Qt5Core.prl:
 E:/Qt/5.15.0/mingw81_32/lib/qtmain.prl:
-.qmake.stash:
 E:/Qt/5.15.0/mingw81_32/mkspecs/features/build_pass.prf:
+../Serial/MESTRE.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ..\Serial\Serial.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
 

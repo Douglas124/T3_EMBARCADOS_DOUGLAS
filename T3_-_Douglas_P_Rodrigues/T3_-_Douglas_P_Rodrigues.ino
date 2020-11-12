@@ -2,6 +2,7 @@
 
 //------------------------------------------------------------------------------------- INCLUDES
 #include <LiquidCrystal.h>
+#include <Servo.h>
 
 //------------------------------------------------------------------------------------- DEFINES
 //defines i2c
@@ -11,6 +12,8 @@
 #define SDA1 digitalWrite(SDA,HIGH)
 #define SCL0 digitalWrite(SCL,LOW)
 #define SCL1 digitalWrite(SCL,HIGH)
+#define SERVO_ABERTO 0
+#define SERVO_FECHADO 180
 
 
 
@@ -26,6 +29,8 @@ LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 // your LCD using them:
 const int numRows = 2;
 const int numCols = 16;
+static int estado_codigo=0, angulo;
+Servo meuservo;
 
 typedef struct{
   char nome[20];
@@ -35,6 +40,8 @@ typedef struct{
   char data_entrada[12];
   char hora_saida[12];
   char data_saida[12];
+  char aux_cadastro; // N = Nao cadastrado, E = Escrever cadastro, L = Ler cadastro, C = Clear estrutura, A = acesso
+  char aux_acesso;   // I = entrada, O = saida
   char fim = '.';
 }estrutura;
 estrutura usuario, usuarioRX;
@@ -169,21 +176,21 @@ int ack_i2c(void){
 //--------------------------------------------------- ESCREVE ESTRUTURA
 void escreve_estrutura (void){
   uint8_t vetor[sizeof(usuario)];
-  int i=0,tamanho=0;
+  int i=0;
   memcpy(vetor,&usuarioRX,sizeof(usuario));
 
+  
   for(i=0;i<sizeof(usuario);i++){
     escreve_cartao(i,vetor[i]);
     delay(10);
   }
-//  tamanho = sizeof(usuario);
-  lcd.setCursor(0,0);
-  lcd.print("Cartao Gravado");
-  delay(1000);
   lcd.clear();
-//   escreve_cartao(0,"1");
-//   delay(10);
+  lcd.setCursor(0,0);
+  lcd.print("Usuario salvo!");
+  delay(500);
+  lcd.clear();
 }
+
 
 //--------------------------------------------------- LE ESTRUTURA
 void le_estrutura (void){   // le a estrutura e armazena em um vetor, e envia pela serial para o QT
@@ -195,48 +202,44 @@ void le_estrutura (void){   // le a estrutura e armazena em um vetor, e envia pe
   }
 
     memcpy(&usuario,vetor,sizeof(usuario));
-}
-
-
-//--------------------------------------------------- TESTA CARTAO
-int testa_cartao (void){   // le a estrutura e armazena em um vetor, e envia pela serial para o QT
-  uint8_t teste;
-  int i=0;
-  static int aux;
-
-  teste = le_cartao(0);
-  if (teste == 1){
-  aux = 1;
-  Serial.write('1');
+  lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("usuario cadastrado");
-  }
-  else {
-   aux = 666;
-   Serial.write('0');
-   lcd.setCursor(0,0);
-   lcd.print("nada");
-  }
-
-  return aux;
+  lcd.print("Concluido!");
+  delay(500);
+  lcd.clear();
 }
-
 
 
 
 //------------------------------------------------------------------------------------- SETUP
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.  
+  meuservo.attach(9);
+  meuservo.write(SERVO_FECHADO);
   Serial.begin(9600);
   delay(100);
   pinMode(LED_BUILTIN, OUTPUT);
   pinMode(SDA, OUTPUT);
   pinMode(SCL, OUTPUT);
   lcd.begin(numCols, numRows);
-//  lcd.setCursor(0,0);
-//  lcd.print("Teste1");
-//  lcd.setCursor(0,1);
-//  lcd.print("Teste2");
+//  usuarioRX.aux_cadastro = 'N';          // inicializa o cadastro caso necessario
+//  escreve_estrutura();
+  lcd.setCursor(0,0);
+  lcd.print("Carregando...");
+  le_estrutura();
+  if (usuario.aux_cadastro == 'N'){
+  lcd.setCursor(0,0);
+  lcd.print("Sem cadastro");
+  delay(1000);
+  lcd.clear();
+  }
+  else {
+  lcd.setCursor(0,0);
+  lcd.print("Existe cadastro!");
+  delay(1000);
+  lcd.clear();
+  
+  }
 }
 
 
@@ -246,20 +249,63 @@ void setup() {
 //------------------------------------------------------------------------------------- WHILE1
 void loop() {
 
-  if(Serial.available())
-  {
+  if(Serial.available()) {
       Serial.readBytesUntil('.',(char*)&usuarioRX, sizeof(usuario));
-      
-      escreve_estrutura();
-      
-      Serial.write(usuario.nome);
-      lcd.setCursor(0,0);
-      lcd.print(usuario.nome);
-      lcd.setCursor(0,1);
-      lcd.print(usuario.cargo);
-      le_estrutura();
-      Serial.write((char*)&usuario, sizeof(usuario));
+      if (usuarioRX.aux_cadastro == 'L'){
+        lcd.setCursor(0,0);
+        lcd.print("Lendo memoria!");
+        lcd.setCursor(0,1);
+        lcd.print("Aguarde...");
+        le_estrutura();
+        Serial.write((char*)&usuario, sizeof(usuario));
+        
+      }
+        else if (usuarioRX.aux_cadastro == 'E'){
+          lcd.setCursor(0,0);
+          lcd.print("Gravando usr!");
+          lcd.setCursor(0,1);
+          lcd.print("Aguarde...");
+          escreve_estrutura();
+        }
+        else if (usuarioRX.aux_cadastro == 'C'){
+         lcd.setCursor(0,0);
+         lcd.print("Apagando!");
+         lcd.setCursor(0,1);
+         lcd.print("Aguarde...");
+         usuarioRX.aux_cadastro = 'N';
+         escreve_estrutura();
+        }
+       else if (usuarioRX.aux_cadastro == 'A'){
+         if (usuarioRX.aux_acesso == 'I'){
+         meuservo.write(0);
+         delay(100);
+         lcd.setCursor(0,0);
+         lcd.print("Entrada permitida!");
+         lcd.setCursor(0,1);
+         lcd.print("Aguarde...");
+         }
+         else if (usuarioRX.aux_acesso == 'O'){
+         meuservo.write(0);
+         lcd.setCursor(0,0);
+         lcd.print("Saida permitida!");
+         lcd.setCursor(0,1);
+         lcd.print("Aguarde..."); 
+         }
+         escreve_estrutura();
+         meuservo.write(SERVO_FECHADO);
+        }
+        else{
+         lcd.setCursor(0,1);
+         lcd.print("Deu mt ruim");
+        }
+
   }
+
+  
+  
+
+
+
 
   
 }

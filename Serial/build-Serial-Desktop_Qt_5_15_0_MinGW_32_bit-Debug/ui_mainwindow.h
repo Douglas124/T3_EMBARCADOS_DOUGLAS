@@ -42,6 +42,8 @@ public:
     QLineEdit *LE_SAIDA;
     QPushButton *BOTAO_LERDADOS;
     QPushButton *BOTAO_APAGA;
+    QPushButton *BOTAO_LIMPA;
+    QPushButton *FOTO;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -50,27 +52,28 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(600, 600);
+        MainWindow->resize(604, 382);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         BOTAO_CONN = new QPushButton(centralWidget);
         BOTAO_CONN->setObjectName(QString::fromUtf8("BOTAO_CONN"));
-        BOTAO_CONN->setGeometry(QRect(20, 330, 75, 23));
+        BOTAO_CONN->setGeometry(QRect(20, 260, 75, 23));
         BOTAO_ENVIA = new QPushButton(centralWidget);
         BOTAO_ENVIA->setObjectName(QString::fromUtf8("BOTAO_ENVIA"));
-        BOTAO_ENVIA->setGeometry(QRect(440, 330, 75, 23));
+        BOTAO_ENVIA->setGeometry(QRect(250, 260, 75, 23));
         LE_NOME = new QLineEdit(centralWidget);
         LE_NOME->setObjectName(QString::fromUtf8("LE_NOME"));
         LE_NOME->setGeometry(QRect(120, 80, 251, 20));
+        LE_NOME->setReadOnly(true);
         label_STSPORTA = new QLabel(centralWidget);
         label_STSPORTA->setObjectName(QString::fromUtf8("label_STSPORTA"));
-        label_STSPORTA->setGeometry(QRect(50, 420, 141, 16));
+        label_STSPORTA->setGeometry(QRect(30, 290, 141, 16));
         label_NOME = new QLabel(centralWidget);
         label_NOME->setObjectName(QString::fromUtf8("label_NOME"));
         label_NOME->setGeometry(QRect(30, 80, 47, 13));
         TITULO_JANELA = new QLabel(centralWidget);
         TITULO_JANELA->setObjectName(QString::fromUtf8("TITULO_JANELA"));
-        TITULO_JANELA->setGeometry(QRect(140, 10, 301, 51));
+        TITULO_JANELA->setGeometry(QRect(170, 10, 301, 51));
         QFont font;
         font.setPointSize(20);
         font.setBold(true);
@@ -91,25 +94,38 @@ public:
         LE_MATRICULA = new QLineEdit(centralWidget);
         LE_MATRICULA->setObjectName(QString::fromUtf8("LE_MATRICULA"));
         LE_MATRICULA->setGeometry(QRect(120, 110, 251, 20));
+        LE_MATRICULA->setReadOnly(true);
         LE_CARGO = new QLineEdit(centralWidget);
         LE_CARGO->setObjectName(QString::fromUtf8("LE_CARGO"));
         LE_CARGO->setGeometry(QRect(120, 140, 251, 20));
+        LE_CARGO->setReadOnly(true);
         LE_ENTRADA = new QLineEdit(centralWidget);
         LE_ENTRADA->setObjectName(QString::fromUtf8("LE_ENTRADA"));
         LE_ENTRADA->setGeometry(QRect(120, 170, 251, 20));
+        LE_ENTRADA->setReadOnly(true);
         LE_SAIDA = new QLineEdit(centralWidget);
         LE_SAIDA->setObjectName(QString::fromUtf8("LE_SAIDA"));
         LE_SAIDA->setGeometry(QRect(120, 200, 251, 20));
+        LE_SAIDA->setReadOnly(true);
         BOTAO_LERDADOS = new QPushButton(centralWidget);
         BOTAO_LERDADOS->setObjectName(QString::fromUtf8("BOTAO_LERDADOS"));
-        BOTAO_LERDADOS->setGeometry(QRect(160, 330, 75, 23));
+        BOTAO_LERDADOS->setGeometry(QRect(130, 260, 75, 23));
         BOTAO_APAGA = new QPushButton(centralWidget);
         BOTAO_APAGA->setObjectName(QString::fromUtf8("BOTAO_APAGA"));
-        BOTAO_APAGA->setGeometry(QRect(310, 330, 75, 23));
+        BOTAO_APAGA->setGeometry(QRect(370, 260, 81, 23));
+        BOTAO_LIMPA = new QPushButton(centralWidget);
+        BOTAO_LIMPA->setObjectName(QString::fromUtf8("BOTAO_LIMPA"));
+        BOTAO_LIMPA->setGeometry(QRect(480, 260, 81, 23));
+        FOTO = new QPushButton(centralWidget);
+        FOTO->setObjectName(QString::fromUtf8("FOTO"));
+        FOTO->setEnabled(true);
+        FOTO->setGeometry(QRect(410, 90, 131, 101));
+        FOTO->setStyleSheet(QString::fromUtf8("image: url(:/new/prefix1/mestrao.jpg);"));
+        FOTO->setFlat(true);
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 600, 21));
+        menuBar->setGeometry(QRect(0, 0, 604, 21));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -127,7 +143,7 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         BOTAO_CONN->setText(QCoreApplication::translate("MainWindow", "Conecta", nullptr));
-        BOTAO_ENVIA->setText(QCoreApplication::translate("MainWindow", "Envia", nullptr));
+        BOTAO_ENVIA->setText(QCoreApplication::translate("MainWindow", "Cadastrar", nullptr));
         LE_NOME->setText(QString());
         label_STSPORTA->setText(QCoreApplication::translate("MainWindow", "Status da Porta : FECHADA", nullptr));
         label_NOME->setText(QCoreApplication::translate("MainWindow", "NOME:", nullptr));
@@ -138,8 +154,10 @@ public:
         label_SAIDA->setText(QCoreApplication::translate("MainWindow", "Ultima SAIDA:", nullptr));
         LE_MATRICULA->setText(QString());
         LE_CARGO->setText(QString());
-        BOTAO_LERDADOS->setText(QCoreApplication::translate("MainWindow", "Ler DADOS", nullptr));
-        BOTAO_APAGA->setText(QCoreApplication::translate("MainWindow", "APAGA", nullptr));
+        BOTAO_LERDADOS->setText(QCoreApplication::translate("MainWindow", "Carregar", nullptr));
+        BOTAO_APAGA->setText(QCoreApplication::translate("MainWindow", "Apaga usuario", nullptr));
+        BOTAO_LIMPA->setText(QCoreApplication::translate("MainWindow", "Limpar tela", nullptr));
+        FOTO->setText(QString());
     } // retranslateUi
 
 };
